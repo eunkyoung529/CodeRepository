@@ -1,59 +1,99 @@
 import java.util.*;
 class Solution {
-    int[][] visited;
-    int[] nx = {-1, 1, 0, 0};
-    int[] ny = {0, 0, -1, 1};
-    int sum;
     
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+    int[][] visited;
+    int[][] map;
+    int sum = 0;
     public int[] solution(String[] maps) {
+        // int[] answer = {};
         int n = maps.length;
         int m = maps[0].length();
         visited = new int[n][m];
-        
-        List<Integer> result = new ArrayList<>();
+        map = new int[n][m];
         
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (maps[i].charAt(j) != 'X' && visited[i][j] == 0) {
-                    sum = 0;
-                    dfs(maps, i, j);
-                    result.add(sum);
+                if (maps[i].charAt(j) == 'X') {
+                    map[i][j] = 0;
+                }
+                else {
+                    map[i][j] = maps[i].charAt(j) - '0';
                 }
             }
         }
         
-        if (result.isEmpty()) {
+        ArrayList<Integer> answer = new ArrayList<>();
+        
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < m; j++) {
+        //         System.out.print(visited[i][j]);
+        //     }
+        // }
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (visited[i][j] == 0 && map[i][j] != 0) {
+                    int sum = dfs(i, j, n, m);
+                    answer.add(sum);
+                }
+            }
+        }
+        
+        if (answer.isEmpty()) {
             return new int[]{-1};
         }
-        Collections.sort(result);
         
-        int[] answer = new int[result.size()];
+        Collections.sort(answer);
         
-        for (int i = 0; i < result.size(); i++) {
-            answer[i] = result.get(i);
+        int[] result = new int[answer.size()];
+        
+        for (int i = 0; i < answer.size(); i++) {
+            result[i] = answer.get(i);
         }
         
-        
-        return answer;
-    }
-    public void dfs(String[] maps, int x, int y) {
-        visited[x][y] = 1;
-        sum += maps[x].charAt(y) - '0';
-        
-        for (int i = 0; i < 4; i++) {
-            int dx = x + nx[i];
-            int dy = y + ny[i];
-            
-            if (dx < 0 || dx >= maps.length || dy < 0 || dy >= maps[0].length()) {
-                continue;
-            }
-            
-            if (maps[dx].charAt(dy) == 'X' || visited[dx][dy] == 1) {
-                continue;
-            }
-            dfs(maps, dx, dy);
-        }
-        
+        // return answer;
+        return result;
     }
     
+//     public void dfs(int x, int y, int n) {
+//         sum = map[x][y];
+//         visited[x][y] = 1;
+        
+//         for (int i = 0; i < 4; i++) {
+//             int x = x + dx[i];
+//             int y = y + dy[i];
+            
+//             if (x < 0 || x > n || y < 0 || y > n) {
+//                 continue;
+//             }
+//             else {
+//                 sum += map[x][y];
+//                 visited[x][y] = 1;
+//             }
+//         }
+//     }
+    
+    public int dfs(int x, int y, int n, int m) {
+        visited[x][y] = 1;
+        
+        int sum = map[x][y];
+        
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
+                continue;
+            }
+            if (map[nx][ny] == 0 || visited[nx][ny] == 1) {
+                continue;
+            }
+            
+            sum += dfs(nx, ny, n, m);
+        }
+        
+        return sum;
+    }
 }
