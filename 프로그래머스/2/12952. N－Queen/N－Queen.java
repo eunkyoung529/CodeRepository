@@ -36,6 +36,7 @@
 //     }
 // }
 
+
 class Solution {
     int[][] board;
     int answer = 0;
@@ -57,7 +58,6 @@ class Solution {
         for (int col = 0; col < n; col++) {
             if (check(row, col, n)) {
                 board[row][col] = 1;
-                
                 dfs(row+1, n);
                 
                 board[row][col] = 0;
@@ -90,11 +90,10 @@ class Solution {
             if (board[x][y] == 1) {
                 return false;
             }
-            
             x--;
             y++;
         }
-        return true;
         
+        return true;
     }
 }
